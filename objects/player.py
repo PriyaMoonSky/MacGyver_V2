@@ -20,7 +20,7 @@ class McGyver(object):
                        pg.K_DOWN: (1, 0),
                        pg.K_LEFT: (0, -1),
                        pg.K_RIGHT: (0, 1)}
-        
+
     # -------------------------------------------------------------------------
     def del_mac(self):
         y, x = self.macpos
@@ -34,3 +34,7 @@ class McGyver(object):
         if (y + offy, x + offx) in lab:
             self.macpos = (y + offy, x + offx)
 
+    # -------------------------------------------------------------------------
+    def show_mac(self):
+        y, x = self.macpos
+        screen.master.blit(self.macpic, (x * 50, y * 50))
