@@ -26,20 +26,20 @@ pg.init()
 
 def main():
     screen = maze.GameBoard()
-    draw = screen.draw()
+    screen.draw()
     hero = player.McGyver(screen)
 
     pg.display.flip()
 
-    # -------------------------------------------------------------------------
     while True:
-        #pg.time.Clock().tick(30)  # -- 30 FPS limit
         ev = pg.event.wait()
         key_pressed = pg.key.get_pressed()
-        # -- Close the window game by the cross button or ESCAPE key
+        # -- Close the window game by the CROSS button or ESCAPE key
         if ev.type == pg.QUIT or key_pressed[pg.K_ESCAPE]:
             break
         elif ev.type == pg.KEYDOWN:
             hero.del_mac()
+            hero.update_mac()
+            hero.show_mac()
 
         pg.display.flip()
