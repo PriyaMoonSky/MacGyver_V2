@@ -40,6 +40,6 @@ def main():
         if ev.type == pg.QUIT or key_pressed[pg.K_ESCAPE]:
             break
         elif ev.type == pg.KEYDOWN:
-            hero.mac_update(draw.maze, screen)
+            hero.del_mac()
 
         pg.display.flip()
