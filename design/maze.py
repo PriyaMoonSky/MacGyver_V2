@@ -2,8 +2,6 @@
 # = Module for labyrinth design and management =
 # ==============================================
 
-#                            TESTING MODE
-
 import pygame as pg
 from random import sample
 from design import constants as cst
@@ -31,9 +29,9 @@ class GameBoard(list):
         pg.key.set_repeat(200, 200)
 
     # ------------------------------------------------------------------------
-    def draw(self):
+    def lab_struct(self):
         # -- Init structure of labyrinth
-        with open('design/labyrinth', 'r') as maze:
+        with open('design/labyrinth') as maze:
             maze = ''.join(maze.read().splitlines())
             # -- Init Guard
             self.gdpos = divmod(maze.find('G'), 15)
@@ -44,6 +42,8 @@ class GameBoard(list):
             # -- Init items
             self.itempos = sample(self[1:], 3)
 
+    # -------------------------------------------------------------------------
+    def draw_objects(self):
         # -- Display walls as background
         self.master.blit(self.wall, (0, 0))
         # -- Display and positioning Guard
