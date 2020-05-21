@@ -10,45 +10,47 @@ from design import constants as cst
 class GameBoard(list):
 
     def __init__(self):
-        """ Window game settings """
         # -- Init game window
         self.master = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE + 55))
         self.title = pg.display.set_caption(cst.GAME_TITLE)
-        self.icon = pg.image.load(cst.MACGYVER_PIC)
+        self.icon = cst.MACGYVER_PIC
         pg.display.set_icon(self.icon)
 
         # -- Init game pictures
-        self.wall = pg.image.load(cst.FULLWALL_PIC).convert_alpha()
-        self.guard = pg.image.load(cst.GUARDIAN_PIC).convert_alpha()
-        self.bkg = pg.image.load(cst.BKG_PIC).convert_alpha()
-        self.itempic = (pg.image.load(cst.NEEDLE_PIC).convert_alpha(),
-                        pg.image.load(cst.PIPE_PIC).convert_alpha(),
-                        pg.image.load(cst.ETHER_PIC).convert_alpha())
+        self.wallpic = cst.FULLWALL_PIC.convert_alpha()
+        self.guardpic = cst.GUARDIAN_PIC.convert_alpha()
+        self.bkg = cst.BKG_PIC.convert_alpha()
+        self.syringepic = cst.SYRINGE_PIC.convert_alpha()
+        self.itempic = (cst.NEEDLE_PIC.convert_alpha(),
+                        cst.PIPE_PIC.convert_alpha(),
+                        cst.ETHER_PIC.convert_alpha())
 
         # -- Repeat the moves when the arrow keys are held down.
-        pg.key.set_repeat(200, 200)
+        pg.key.set_repeat(50, 100)
 
     # ------------------------------------------------------------------------
     def lab_struct(self):
         # -- Init structure of labyrinth
         with open('design/labyrinth') as maze:
             maze = ''.join(maze.read().splitlines())
-            # -- Init Guard
-            self.gdpos = divmod(maze.find('G'), 15)
-            #self.extend([self.gdpos])
             # -- Init empty sprites
             self.extend([divmod(idx, 15) for idx, value in enumerate(maze)
                         if value == '0'])
-            # -- Init items
+            # -- Init Guard
+            self.gdpos = divmod(maze.find('G'), 15)
+            self.extend([self.gdpos])
+            # -- Init the 3 items random position
             self.itempos = sample(self[1:], 3)
+
+            return self
 
     # -------------------------------------------------------------------------
     def draw_objects(self):
         # -- Display walls as background
-        self.master.blit(self.wall, (0, 0))
+        self.master.blit(self.wallpic, (0, 0))
         # -- Display and positioning Guard
         gdy, gdx = self.gdpos
-        self.master.blit(self.guard, (gdx * 50, gdy * 50))
+        self.master.blit(self.guardpic, (gdx * 50, gdy * 50))
         # -- Draw the empty path
         for y, x in self:
             self.master.blit(self.bkg, (x * 50, y * 50),
@@ -56,3 +58,12 @@ class GameBoard(list):
         # -- Display and positioning items
         for it, (y, x) in zip(self.itempic, self.itempos):
             self.master.blit(it, (x * 50, y * 50))
+
+    def itembar(self):
+        if len(self.itempos) == 2:
+            self.master.blit(self.guardpic, (0, 752))
+        if len(self.itempos) == 1:
+            self.master.blit(self.guardpic, (50, 752))
+        if len(self.itempos) == 0:
+            self.master.blit(self.guardpic, (100, 752))
+            self.master.blit(self.syringepic, (390, 752))
