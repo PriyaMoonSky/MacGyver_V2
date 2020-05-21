@@ -1,8 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-#                            TESTING MODE
-
 # ==========================================================================
 # =                  MACGYVER LABYRINTH GAME USING PYGAME                  =
 # =                       OPENCLASSROOMS - PROJECT 03                      =
@@ -12,22 +10,26 @@
 # =  Use direction arrows for MacGyver's moves                             =
 # ==========================================================================
 
-#--- Import Python modules
+# -- Import Python modules
 import pygame as pg
 from os import system, environ
-#--- Import personnal modules
+# -- Import personnal modules
 from design import maze, constants as cst
-from objects import player
-# Not needed just for me
+from objects import player, itemcounter as itc
+
+# -- Not needed, just for me
 system('clear')
 # -- Force center screen
 environ['SDL_VIDEO_CENTERED'] = '1'
 pg.init()
 
+
 def main():
     screen = maze.GameBoard()
-    screen.draw()
+    board = screen.lab_struct()
+    screen.draw_objects()
     hero = player.McGyver(screen)
+    counter = itc.ItemsCounter()
 
     pg.display.flip()
 
@@ -39,7 +41,9 @@ def main():
             break
         elif ev.type == pg.KEYDOWN:
             hero.del_mac()
-            hero.update_mac()
+            hero.update_mac(ev.key, board)
             hero.show_mac()
+            hero.pickup(board, counter)
+            screen.itembar()
 
         pg.display.flip()
