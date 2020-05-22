@@ -15,7 +15,7 @@ import pygame as pg
 from os import system, environ
 # -- Import personnal modules
 from design import maze, constants as cst
-from objects import player, itemcounter as itc
+from objects import player
 
 # -- Not needed, just for me
 system('clear')
@@ -29,7 +29,6 @@ def main():
     board = screen.lab_struct()
     screen.draw_objects()
     hero = player.McGyver(screen)
-    counter = itc.ItemsCounter()
 
     pg.display.flip()
 
@@ -43,7 +42,8 @@ def main():
             hero.del_mac()
             hero.update_mac(ev.key, board)
             hero.show_mac()
-            hero.pickup(board, counter)
+            hero.pickup(board)
             screen.itembar()
+            screen.win_loose()
 
         pg.display.flip()
