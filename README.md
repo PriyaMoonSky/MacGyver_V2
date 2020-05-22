@@ -1,2 +1,2 @@
 # MacGyver_V2
-Pffff !!!
+Labyrinth game
