@@ -42,7 +42,6 @@ class McGyver(object):
         self.screen.master.blit(self.macpic, (x * 50, y * 50))
 
     # -------------------------------------------------------------------------
-    def pickup(self, board, counter):
+    def pickup(self, board):
         if self.macpos in board.itempos:
             board.itempos.remove(self.macpos)
-            counter.decrease()
