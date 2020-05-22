@@ -12,6 +12,7 @@ class GameBoard(list):
     def __init__(self):
         # -- Init game window
         self.master = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE + 55))
+        self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
         self.title = pg.display.set_caption(cst.GAME_TITLE)
         self.icon = cst.MACGYVER_PIC
         pg.display.set_icon(self.icon)
@@ -21,6 +22,8 @@ class GameBoard(list):
         self.guardpic = cst.GUARDIAN_PIC.convert_alpha()
         self.bkg = cst.BKG_PIC.convert_alpha()
         self.syringepic = cst.SYRINGE_PIC.convert_alpha()
+        self.win = cst.YOUWIN_PIC.convert_alpha()
+        self.loose = cst.GAMEOVER_PIC.convert_alpha()
         self.itempic = (cst.NEEDLE_PIC.convert_alpha(),
                         cst.PIPE_PIC.convert_alpha(),
                         cst.ETHER_PIC.convert_alpha())
@@ -38,7 +41,7 @@ class GameBoard(list):
                         if value == '0'])
             # -- Init Guard
             self.gdpos = divmod(maze.find('G'), 15)
-            self.extend([self.gdpos])
+            #self.extend([self.gdpos])
             # -- Init the 3 items random position
             self.itempos = sample(self[1:], 3)
 
@@ -59,11 +62,22 @@ class GameBoard(list):
         for it, (y, x) in zip(self.itempic, self.itempos):
             self.master.blit(it, (x * 50, y * 50))
 
+    # -------------------------------------------------------------------------
     def itembar(self):
+        print(self.itempos)
         if len(self.itempos) == 2:
-            self.master.blit(self.guardpic, (0, 752))
+            self.master.blit(self.itempic[0], (0, 752))
         if len(self.itempos) == 1:
-            self.master.blit(self.guardpic, (50, 752))
+            self.master.blit(self.itempic[1], (50, 752))
         if len(self.itempos) == 0:
-            self.master.blit(self.guardpic, (100, 752))
+            self.master.blit(self.itempic[2], (100, 752))
             self.master.blit(self.syringepic, (390, 752))
+
+    # -------------------------------------------------------------------------
+    def win_loose(self):
+        if len(self.itempos) == 0:  # Guard position missing
+            self.endgame.blit(self.win, (0, 0))
+            print("--- YOU WIN ---")
+        elif len(self.itempos) != 0:
+            #self.endgame.blit(self.loose, (0, 0))
+            print("--- ITEMS MISSING ---")
