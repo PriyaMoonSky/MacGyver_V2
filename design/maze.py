@@ -12,7 +12,6 @@ class GameBoard(list):
     def __init__(self):
         # -- Init game window
         self.master = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE + 55))
-        self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
         self.title = pg.display.set_caption(cst.GAME_TITLE)
         self.icon = cst.MACGYVER_PIC
         pg.display.set_icon(self.icon)
@@ -41,7 +40,7 @@ class GameBoard(list):
                         if value == '0'])
             # -- Init Guard
             self.gdpos = divmod(maze.find('G'), 15)
-            #self.extend([self.gdpos])
+            self.extend([self.gdpos])
             # -- Init the 3 items random position
             self.itempos = sample(self[1:], 3)
 
@@ -75,9 +74,12 @@ class GameBoard(list):
 
     # -------------------------------------------------------------------------
     def win_loose(self):
-        if len(self.itempos) == 0:  # Guard position missing
+        # if macgyver pos == guard pos:
+        if len(self.itempos) == 0:
+            self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
             self.endgame.blit(self.win, (0, 0))
             print("--- YOU WIN ---")
-        elif len(self.itempos) != 0:
-            #self.endgame.blit(self.loose, (0, 0))
+        elif len(self.itempos) == 1:    # != 0
+            self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
+            self.endgame.blit(self.loose, (0, 0))
             print("--- ITEMS MISSING ---")
