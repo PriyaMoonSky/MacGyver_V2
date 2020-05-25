@@ -17,6 +17,7 @@ class McGyver(object):
         self.screen = screen
         self.screen.master.blit(self.macpic, self.macpos)
 
+        # -- MacGyver with arrow keys
         self.arrows = {pg.K_UP: (-1, 0),
                        pg.K_DOWN: (1, 0),
                        pg.K_LEFT: (0, -1),
@@ -24,24 +25,29 @@ class McGyver(object):
 
     # -------------------------------------------------------------------------
     def del_mac(self):
-        y, x = self.macpos
-        self.screen.master.blit(self.bkg, (x * 50, y * 50),
-                                (x * 50, y * 50, 50, 50))
+        macpos_y, macpos_x = self.macpos
+        self.screen.master.blit(self.bkg, (macpos_x * 50, macpos_y * 50),
+                                (macpos_x * 50, macpos_y * 50, 50, 50))
 
     # -------------------------------------------------------------------------
     def update_mac(self, key, board):
-        y, x = self.macpos
+        macpos_y, macpos_x = self.macpos
 
-        offy, offx = self.arrows.get(key, (50, 0))
-        if (y + offy, x + offx) in board:
-            self.macpos = (y + offy, x + offx)
+        offset_y, offset_x = self.arrows.get(key, (50, 0))
+        if (macpos_y + offset_y, macpos_x + offset_x) in board:
+            self.macpos = (macpos_y + offset_y, macpos_x + offset_x)
 
     # -------------------------------------------------------------------------
     def show_mac(self):
-        y, x = self.macpos
-        self.screen.master.blit(self.macpic, (x * 50, y * 50))
+        macpos_y, macpos_x = self.macpos
+        self.screen.master.blit(self.macpic, (macpos_x * 50, macpos_y * 50))
 
     # -------------------------------------------------------------------------
-    def pickup(self, board):
+    def pickup(self, board, counter):
         if self.macpos in board.itempos:
+            for item, (imgpos_y, imgpos_x) in board.image_position_list:
+                if self.macpos == (imgpos_y, imgpos_x):
+                    counter.decrease()
+                    board.itembar(item, counter)
+
             board.itempos.remove(self.macpos)
