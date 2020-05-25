@@ -12,26 +12,27 @@
 
 # -- Import Python modules
 import pygame as pg
-from os import system, environ
+from os import environ
 # -- Import personnal modules
 from design import maze, constants as cst
-from objects import player
+from objects import player, itemcounter
 
-# -- Not needed, just for me
-system('clear')
-# -- Force center screen
+# -- Force center screen and init pygamem
 environ['SDL_VIDEO_CENTERED'] = '1'
 pg.init()
 
 
+# ============================================================================
 def main():
     screen = maze.GameBoard()
     board = screen.lab_struct()
     screen.draw_objects()
     hero = player.McGyver(screen)
+    counter = itemcounter.ItemCounter()
 
     pg.display.flip()
 
+    # ------------------------------------------------------------------------
     while True:
         ev = pg.event.wait()
         key_pressed = pg.key.get_pressed()
@@ -42,8 +43,7 @@ def main():
             hero.del_mac()
             hero.update_mac(ev.key, board)
             hero.show_mac()
-            hero.pickup(board)
-            screen.itembar()
-            screen.win_loose()
+            hero.pickup(board, counter)
+            screen.win_loose(hero, counter)
 
         pg.display.flip()
