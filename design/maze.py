@@ -19,14 +19,15 @@ class GameBoard(list):
         # -- Init game pictures
         self.wallpic = cst.FULLWALL_PIC.convert_alpha()
         self.guardpic = cst.GUARDIAN_PIC.convert_alpha()
-        self.bkg = cst.BKG_PIC.convert_alpha()
+        self.bground = cst.BKG_PIC.convert_alpha()
         self.syringepic = cst.SYRINGE_PIC.convert_alpha()
         self.win = cst.YOUWIN_PIC.convert_alpha()
         self.loose = cst.GAMEOVER_PIC.convert_alpha()
         self.itempic = (cst.NEEDLE_PIC.convert_alpha(),
                         cst.PIPE_PIC.convert_alpha(),
                         cst.ETHER_PIC.convert_alpha())
-
+        # -- List for storing images and thei positions
+        self.image_position_list = []
         # -- Repeat the moves when the arrow keys are held down.
         pg.key.set_repeat(50, 100)
 
@@ -39,8 +40,7 @@ class GameBoard(list):
             self.extend([divmod(idx, 15) for idx, value in enumerate(maze)
                         if value == '0'])
             # -- Init Guard
-            self.gdpos = divmod(maze.find('G'), 15)
-            self.extend([self.gdpos])
+            self.guardpos = divmod(maze.find('G'), 15)
             # -- Init the 3 items random position
             self.itempos = sample(self[1:], 3)
 
@@ -50,36 +50,41 @@ class GameBoard(list):
     def draw_objects(self):
         # -- Display walls as background
         self.master.blit(self.wallpic, (0, 0))
-        # -- Display and positioning Guard
-        gdy, gdx = self.gdpos
-        self.master.blit(self.guardpic, (gdx * 50, gdy * 50))
         # -- Draw the empty path
-        for y, x in self:
-            self.master.blit(self.bkg, (x * 50, y * 50),
-                             (x * 50, y * 50, 50, 50))
+        for emptypos_y, emptypos_x in self:
+            self.master.blit(self.bground, (emptypos_x * 50, emptypos_y * 50),
+                             (emptypos_x * 50, emptypos_y * 50, 50, 50))
+        # -- Display and positioning Guard
+        guardpos_y, guardpos_x = self.guardpos
+        self.master.blit(self.bground, (guardpos_x * 50, guardpos_y * 50),
+                         (guardpos_x * 50, guardpos_y * 50, 50, 50))
+        self.master.blit(self.guardpic, (guardpos_x * 50, guardpos_y * 50))
+        # -- Without it, MacGyver can't get into the same cell with the guard
+        self.extend([self.guardpos])
         # -- Display and positioning items
-        for it, (y, x) in zip(self.itempic, self.itempos):
-            self.master.blit(it, (x * 50, y * 50))
+        for item, (pos_y, pos_x) in zip(self.itempic, self.itempos):
+            self.master.blit(item, (pos_x * 50, pos_y * 50))
+            # -- Add item and their position in tuple in list
+            self.image_position_list.append((item, (pos_y, pos_x)))
 
     # -------------------------------------------------------------------------
-    def itembar(self):
-        print(self.itempos)
-        if len(self.itempos) == 2:
-            self.master.blit(self.itempic[0], (0, 752))
-        if len(self.itempos) == 1:
-            self.master.blit(self.itempic[1], (50, 752))
-        if len(self.itempos) == 0:
-            self.master.blit(self.itempic[2], (100, 752))
+    def itembar(self, item, counter):
+        # -- Decrease counter
+        if counter.get_counter_value() == 2:
+            # -- Positioning the item in itembar
+            self.master.blit(item, (0, 752))
+        if counter.get_counter_value() == 1:
+            self.master.blit(item, (50, 752))
+        if counter.get_counter_value() == 0:
+            self.master.blit(item, (100, 752))
             self.master.blit(self.syringepic, (390, 752))
 
     # -------------------------------------------------------------------------
-    def win_loose(self):
-        # if macgyver pos == guard pos:
-        if len(self.itempos) == 0:
-            self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
-            self.endgame.blit(self.win, (0, 0))
-            print("--- YOU WIN ---")
-        elif len(self.itempos) == 1:    # != 0
-            self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
-            self.endgame.blit(self.loose, (0, 0))
-            print("--- ITEMS MISSING ---")
+    def win_loose(self, player, counter):
+        if self.guardpos == player.macpos:
+            if counter.get_counter_value() == 0:
+                self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
+                self.endgame.blit(self.win, (0, 0))
+            else:
+                self.endgame = pg.display.set_mode((cst.WINSIZE, cst.WINSIZE))
+                self.endgame.blit(self.loose, (0, 0))
