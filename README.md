@@ -12,7 +12,7 @@ You must get all items before trying to get out of the labyrinth.
 ### Changelog
 ---
 Version 2.0
-- Major refactoring code
+- Major update of the code
 
 Version 1.0
 - Initial release

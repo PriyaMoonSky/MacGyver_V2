@@ -4,7 +4,7 @@
 
 import pygame as pg
 from random import sample
-from design import constants as cst
+from game import constants as cst
 
 
 class GameBoard(list):
@@ -34,7 +34,7 @@ class GameBoard(list):
     # ------------------------------------------------------------------------
     def lab_struct(self):
         # -- Init structure of the labyrinth
-        with open('design/labyrinth') as maze:
+        with open('game/labyrinth') as maze:
             maze = ''.join(maze.read().splitlines())
             # -- Init empty sprites positions
             self.extend([divmod(idx, 15) for idx, value in enumerate(maze)
@@ -59,7 +59,7 @@ class GameBoard(list):
         self.master.blit(self.bground, (guardpos_x * 50, guardpos_y * 50),
                          (guardpos_x * 50, guardpos_y * 50, 50, 50))
         self.master.blit(self.guardpic, (guardpos_x * 50, guardpos_y * 50))
-        # -- Without it, MacGyver can't get into the same cell with the guardian
+        # -- Without it, MacGyver can't get into the same cell with the guard
         self.extend([self.guardpos])
         # -- Display and positioning items
         for item, (pos_y, pos_x) in zip(self.itempic, self.itempos):

@@ -14,8 +14,8 @@
 import pygame as pg
 from os import environ
 # -- Import personnal modules
-from design import maze, constants as cst
-from objects import player, itemcounter
+from game import maze, itemcounter, constants as cst
+from player import player
 
 # -- Force center screen and init Pygame
 environ['SDL_VIDEO_CENTERED'] = '1'

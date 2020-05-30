@@ -3,7 +3,7 @@
 # ==================================
 
 import pygame as pg
-from design import constants as cst
+from game import constants as cst
 
 
 class McGyver(object):
