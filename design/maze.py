@@ -26,22 +26,22 @@ class GameBoard(list):
         self.itempic = (cst.NEEDLE_PIC.convert_alpha(),
                         cst.PIPE_PIC.convert_alpha(),
                         cst.ETHER_PIC.convert_alpha())
-        # -- List for storing images and thei positions
+        # -- List for storing pics and their positions
         self.image_position_list = []
         # -- Repeat the moves when the arrow keys are held down.
         pg.key.set_repeat(50, 100)
 
     # ------------------------------------------------------------------------
     def lab_struct(self):
-        # -- Init structure of labyrinth
+        # -- Init structure of the labyrinth
         with open('design/labyrinth') as maze:
             maze = ''.join(maze.read().splitlines())
-            # -- Init empty sprites
+            # -- Init empty sprites positions
             self.extend([divmod(idx, 15) for idx, value in enumerate(maze)
                         if value == '0'])
-            # -- Init Guard
+            # -- Init guardian position
             self.guardpos = divmod(maze.find('G'), 15)
-            # -- Init the 3 items random position
+            # -- Init the 3 items random positions
             self.itempos = sample(self[1:], 3)
 
             return self
@@ -54,12 +54,12 @@ class GameBoard(list):
         for emptypos_y, emptypos_x in self:
             self.master.blit(self.bground, (emptypos_x * 50, emptypos_y * 50),
                              (emptypos_x * 50, emptypos_y * 50, 50, 50))
-        # -- Display and positioning Guard
+        # -- Display and positioning guardian
         guardpos_y, guardpos_x = self.guardpos
         self.master.blit(self.bground, (guardpos_x * 50, guardpos_y * 50),
                          (guardpos_x * 50, guardpos_y * 50, 50, 50))
         self.master.blit(self.guardpic, (guardpos_x * 50, guardpos_y * 50))
-        # -- Without it, MacGyver can't get into the same cell with the guard
+        # -- Without it, MacGyver can't get into the same cell with the guardian
         self.extend([self.guardpos])
         # -- Display and positioning items
         for item, (pos_y, pos_x) in zip(self.itempic, self.itempos):
